@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-11-02T15:06:00Z",
+  "generatedOnPlatform": "win32",
+  "projectType": "webapp",
+  "setup": [],
+  "assertions": [
+    {
+      "name": "frontend-production-build",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "run",
+        "build"
+      ],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 180
+    },
+    {
+      "name": "frontend-lint",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "run",
+        "lint"
+      ],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 120
+    },
+    {
+      "name": "tests-pass",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "test",
+        "--",
+        "--test-reporter=tap"
+      ],
+      "verificationMethod": "test-results",
+      "expected": "0",
+      "timeoutSeconds": 180
+    },
+    {
+      "name": "backend-unit-tests",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "test"
+      ],
+      "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\backend",
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 180
+    },
+    {
+      "name": "mongodb-backend-integration",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "run",
+        "test:integration"
+      ],
+      "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\backend",
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 300
+    },
+    {
+      "name": "frontend-serves-home",
+      "kind": "http-probe",
+      "startCommand": "npm",
+      "startArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5177"
+      ],
+      "cwd": ".",
+      "url": "http://127.0.0.1:5177/",
+      "verificationMethod": "http-status",
+      "expected": "200",
+      "timeoutSeconds": 120
+    }
+  ]
+}

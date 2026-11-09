@@ -1,0 +1,175 @@
+{
+  "planHash": "106b7c9abdbe341812b4d47f248179e1aa6fb17930379cd26b724fcea834136c",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-02T18:34:04.7718027Z",
+  "retryCount": 3,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "frontend-production-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 build\r\n\u003E vite build\r\n\r\n\u001B[36mvite v8.3.5 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 2695 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/index.html                        0.55 kB \u2502 gzip:   0.34 kB\r\ndist/assets/index-BIAza-BW.css        31.48 kB \u2502 gzip:   7.70 kB\r\ndist/assets/ReportsPage-CNJo_lJC.js  380.04 kB \u2502 gzip: 108.60 kB\r\ndist/assets/index-B-v32wSL.js        393.01 kB \u2502 gzip: 123.05 kB\r\n\r\n\u001B[32m\u2713 built in 715ms\u001B[39m\r\n",
+        "durationMs": 2200
+      },
+      {
+        "name": "frontend-lint",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 lint\r\n\u003E oxlint\r\n\r\n",
+        "durationMs": 1112
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 test\r\n\u003E node --test --test-reporter=tap\r\n\r\nTAP version 13\r\n# Subtest: password change rejects mismatched confirmation\r\nok 1 - password change rejects mismatched confirmation\r\n  ---\r\n  duration_ms: 1.0369\r\n  type: \u0027test\u0027\r\n  ...\r\n# Subtest: password change rejects passwords shorter than six characters\r\nok 2 - password change rejects passwords shorter than six characters\r\n  ---\r\n  duration_ms: 0.169\r\n  type: \u0027test\u0027\r\n  ...\r\n# Subtest: password change accepts a matching valid password\r\nok 3 - password change accepts a matching valid password\r\n  ---\r\n  duration_ms: 0.1476\r\n  type: \u0027test\u0027\r\n  ...\r\n1..3\r\n# tests 3\r\n# suites 0\r\n# pass 3\r\n# fail 0\r\n# cancelled 0\r\n# skipped 0\r\n# todo 0\r\n# duration_ms 173.6378\r\n",
+        "durationMs": 1150,
+        "testResults": {
+          "testFramework": "unknown",
+          "runnerDetectedFrom": "none",
+          "testsTotal": 0,
+          "testsPassed": 0,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": true
+        }
+      },
+      {
+        "name": "backend-unit-tests",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E backend@1.0.0 test\r\n\u003E node --test\r\n\r\n\u2714 Admin user creation supports each managed role (1726.5586ms)\r\n\u2714 Admin user creation rejects invalid roles (0.5562ms)\r\n\u2714 staff creation hashes the password and returns no credential (455.61ms)\r\n\u2714 admin cannot demote their own account, even with uppercase ID casing (2.0598ms)\r\n\u2714 Admin approval grants Editor role only to a pending application (1.0609ms)\r\n\u2714 Admin rejection leaves the applicant as a Reader (1.1836ms)\r\n\u2714 public article filters search all text fields and stay Published-only (3.8721ms)\r\n\u2714 staff can filter by an allowed publishing status (0.3954ms)\r\n\u2714 public callers cannot select an article status (0.7926ms)\r\n\u2714 pagination and filter inputs reject invalid values (0.7326ms)\r\n\u2714 article input rejects caller-controlled workflow fields (0.7269ms)\r\n\u2714 article input accepts an empty optional image URL (0.3193ms)\r\n\u2714 article input preserves source and event metadata and rejects unsafe source URLs (1.9025ms)\r\n\u2714 public article list returns pagination metadata and enforces Published (0.7323ms)\r\n\u2714 public article details query Published articles only (0.5903ms)\r\n\u2714 public detail endpoint hides articles that are not published (0.5339ms)\r\n\u2714 article endpoints reject malformed IDs before querying MongoDB (0.267ms)\r\n\u2714 creator article listing is scoped to the signed-in author (0.5029ms)\r\n\u2714 Admin can load an article from another author for editing (0.5611ms)\r\n\u2714 creator cannot load another author\u0027s article for editing (0.3293ms)\r\n\u2714 creators cannot edit another author\u0027s article (0.4848ms)\r\n\u2714 creators cannot edit an article after submission (0.2091ms)\r\n\u2714 publishing rejects articles that were not submitted for review (0.3816ms)\r\n\u2714 publishing a pending article sets publishedAt and transitions once (0.3858ms)\r\n\u2714 a concurrent duplicate publish returns a conflict (0.2369ms)\r\n\u2714 rejection requires a reason and stores it on the article (0.4353ms)\r\n\u2714 submission permits only the article owner and eligible states (0.3722ms)\r\n\u2714 public registration supports Reader and Creator and holds Editor access for Admin approval (322.5931ms)\r\n\u2714 inactive accounts cannot log in with valid credentials (5.5552ms)\r\n\u2714 auth routes load using the controller\u0027s exact filename casing (1680.3203ms)\r\n\u2714 admin and category routes load (57.3092ms)\r\n\u2714 reader engagement and comment routes load (7.5246ms)\r\n\u2714 category deletion deactivates the record instead of removing it (1.9248ms)\r\n\u2714 comment schema includes moderation statuses and reason (3.4039ms)\r\n\u2714 submitted comments are pending moderation (1.0227ms)\r\n\u2714 public comments query approved status only (0.8847ms)\r\n\u2714 moderation queue defaults to pending and reports pagination (1.214ms)\r\n\u2714 a reader cannot moderate a comment (0.5345ms)\r\n\u2714 moderators must give a reason when rejecting a comment (0.5016ms)\r\n\u2714 an owner cannot edit an approved comment (0.631ms)\r\n\u25C7 injected env (3) from .env\r\n\u2714 initial Admin bootstrap rejects a weak password before connecting (2.0051ms)\r\n\u2714 requires MongoDB URI and JWT secret without exposing their values (3.5402ms)\r\n\u2714 rejects blank required environment values (0.3508ms)\r\n\u2714 uses the default port when PORT is not set (0.9395ms)\r\n\u2714 accepts a valid configured port (0.2406ms)\r\n\u2714 rejects an invalid configured port (0.3017ms)\r\n\u2714 image upload accepts matching JPEG, PNG, and WEBP file signatures (3.9161ms)\r\n\u2714 image upload rejects unsupported extensions and spoofed file contents (5.0913ms)\r\n\u2714 reader interaction schema enforces one record per reader and article (1.771ms)\r\n\u2714 like endpoint creates one like and increments the article counter once (1.7153ms)\r\n\u2714 repeated like does not increment article like count again (0.5151ms)\r\n\u2714 unlike only decrements the aggregate when the reader had liked it (0.4322ms)\r\n\u2714 reader must submit a bounded array of interests (1.0873ms)\r\n\u2714 view tracking rejects invalid IDs without a database query (0.5289ms)\r\n\u2714 bookmark on a non-published article is rejected (0.4816ms)\r\n\u2714 interaction state is queried for the authenticated reader only (0.6003ms)\r\n\u2714 popularity fallback excludes read and unpublished articles (2.6782ms)\r\n\u2714 writing assistant returns valida\n\u2026[truncated]",
+        "durationMs": 4671
+      },
+      {
+        "name": "mongodb-backend-integration",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E backend@1.0.0 test:integration\r\n\u003E node --test integration/articleApi.integration.cjs\r\n\r\n\u25C7 injected env (0) from .env\r\n\u2714 authenticated account profiles are private, editable, and preserve role and interests (6616.0988ms)\r\n\u2714 Admin creates all account roles and only Admin can use the user-management API (3789.3658ms)\r\n\u2714 public role requests keep Editor applicants reader-only until Admin approval (558.2208ms)\r\n\u2714 AI writing assistance is protected and uses only the configured local Ollama endpoint (23.3199ms)\r\n\u2714 article image uploads validate type, size, roles, serving, and persistence (158.0317ms)\r\n\u2714 category image uploads are Admin-only and persist in MongoDB (44.2783ms)\r\n\u2714 public search, category/tag filters, and pagination use MongoDB (9.8571ms)\r\n\u2714 public endpoints never disclose non-published articles (11.3394ms)\r\n\u2714 invalid query parameters and status injection return HTTP 400 (5.8439ms)\r\n\u2714 management filters return status counts from the database (13.791ms)\r\n\u2714 creator listing is scoped to the authenticated user (10.0803ms)\r\n\u2714 owner submits and Editor publishes exactly once with publishedAt set (21.3417ms)\r\n\u2714 Editor rejection requires and persists a reason (12.7903ms)\r\n\u2714 invalid article IDs return HTTP 400 (4.0037ms)\r\n\u2714 creator cannot edit another user\u0027s article (14.0388ms)\r\n\u2714 like and unlike are idempotent and preserve one reader/article record (38.2208ms)\r\n\u2714 bookmark and unbookmark are idempotent and saved articles are listed (48.0959ms)\r\n\u2714 view tracking updates article totals and reader history (49.7516ms)\r\n\u2714 view tracking requires a valid reading session UUID (5.4206ms)\r\n\u2714 reader preferences validate, normalize, and persist interests (14.5215ms)\r\n\u2714 article interaction state is scoped to the signed-in Reader (49.1952ms)\r\n\u2714 authenticated recommendations use reader interests, likes, and TF-IDF (66.672ms)\r\nML recommendation service unavailable: fetch failed\r\n\u2714 recommendation route returns popularity fallback when ML is down (11.5455ms)\r\n\u2714 admin analytics reports are populated and remain admin-only (25.2862ms)\r\n\u2714 one reader cannot remove another reader\u0027s bookmark (27.1001ms)\r\n\u2714 unpublished and deleted articles hide reader data and allow own cleanup (82.7675ms)\r\n\u2714 comments remain hidden until approved by a moderator (46.4645ms)\r\n\u2714 a reader cannot modify or delete another reader\u0027s comment (23.3374ms)\r\n\u2714 comment rejection requires a reason and is not publicly visible (41.832ms)\r\n\u2139 tests 29\r\n\u2139 suites 0\r\n\u2139 pass 29\r\n\u2139 fail 0\r\n\u2139 cancelled 0\r\n\u2139 skipped 0\r\n\u2139 todo 0\r\n\u2139 duration_ms 18332.3803\r\n",
+        "durationMs": 19259
+      },
+      {
+        "name": "frontend-serves-home",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!doctype html\u003E\n\u003Chtml lang=\u0022en\u0022\u003E\n  \u003Chead\u003E\n    \u003Cscript type=\u0022module\u0022\u003Eimport { injectIntoGlobalHook } from \u0022/@react-refresh\u0022;\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () =\u003E {};\nwindow.$RefreshSig$ = () =\u003E (type) =\u003E type;\u003C/script\u003E\n\n    \u003Cscript type=\u0022module\u0022 src=\u0022/@vite/client\u0022\u003E\u003C/script\u003E\n\n    \u003Cmeta charset=\u0022UTF-8\u0022 /\u003E\n    \u003Cmeta name=\u0022viewport\u0022 content=\u0022width=device-width, initial-scale=1.0\u0022 /\u003E\n    \u003Cmeta name=\u0022theme-color\u0022 content=\u0022#f7f8fa\u0022 /\u003E\n    \u003Cmeta name=\u0022description\u0022 content=\u0022A thoughtful home for the stories that matter.\u0022 /\u003E\n    \u003Ctitle\u003EBriefly \u2014 Smart Newsroom\u003C/title\u003E\n  \u003C/head\u003E\n  \u003Cbody\u003E\n    \u003Cdiv id=\u0022root\u0022\u003E\u003C/div\u003E\n    \u003Cscript type=\u0022module\u0022 src=\u0022/src/main.jsx\u0022\u003E\u003C/script\u003E\n  \u003C/body\u003E\n\u003C/html\u003E\n\n--- server output ---\n\r\n\u003E frontend@0.0.0 dev\r\n\u003E vite --host 127.0.0.1 --port 5177\r\n\r\n\r\n  \u001B[32m\u001B[1mVITE\u001B[22m v8.3.5\u001B[39m  \u001B[2mready in \u001B[0m\u001B[1m395\u001B[22m\u001B[2m\u001B[0m ms\u001B[22m\r\n\r\n  \u001B[32m\u279C\u001B[39m  \u001B[1mLocal\u001B[22m:   \u001B[36mhttp://127.0.0.1:\u001B[1m5177\u001B[22m/\u001B[39m\r\n",
+        "durationMs": 1579
+      }
+    ],
+    "executions": [
+      {
+        "source": "frontend-production-build",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "frontend-lint",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "lint"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test",
+          "--",
+          "--test-reporter=tap"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "backend-unit-tests",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\backend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "mongodb-backend-integration",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "test:integration"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\backend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "frontend-serves-home",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "5177"
+        ],
+        "cwd": "C:\\Users\\sravan\\OneDrive\\Desktop\\Smart-News-Platform\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

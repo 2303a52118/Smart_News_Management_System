@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: smart-news-ml
+    runtime: python
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    healthCheckPath: /health
+
+  - type: web
+    name: smart-news-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ML_SERVICE_URL
+        value: https://${{smart-news-ml.host}}
+
+  - type: web
+    name: smart-news-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://${{smart-news-api.host}}/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
