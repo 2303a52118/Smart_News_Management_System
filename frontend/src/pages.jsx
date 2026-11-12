@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
-  ArrowRight, Bookmark, Check, ChevronLeft, Clock3, Eye, FileText, Heart, LoaderCircle,
+  ArrowRight, Bookmark, Check, ChevronLeft, Clock3, Compass, Eye, FileText, Heart, LoaderCircle,
   LockKeyhole, Mail, MessageSquare, Plus, Search, Send, Sparkles, Trash2,
-  Settings2, TrendingUp, UserRound, X,
+  Newspaper, Settings2, TrendingUp, UserRound, X,
 } from 'lucide-react'
 import api, { getAssetUrl, getErrorMessage } from './api'
 import { getPasswordChangeValidationMessage } from './accountValidation'
@@ -73,17 +74,19 @@ function EmptyState({ title, description, action }) {
 
 function ArticleCard({ article, compact = false }) {
   const id = article._id || article.article_id
-  const category = article.category || 'News'
+  const category = article.category || ''
+  const author = article.author?.name || article.author
+  const publishedAt = article.publishedAt || article.published_at || article.createdAt
   return (
     <article className={`article-card ${compact ? 'article-card-compact' : ''}`}>
-      <Link to={`/article/${id}`} className={`article-visual category-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} aria-label={`Read ${article.title}`}>
+      <Link to={`/article/${id}`} className={`article-visual${category ? ` category-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : ''}`} aria-label={`Read ${article.title}`}>
         {article.imageUrl || article.image_url
           ? <img src={getAssetUrl(article.imageUrl || article.image_url)} alt="" loading="lazy" />
-          : <span className="visual-monogram">{initials(category)}</span>}
-        <span className="category-pill">{category}</span>
+          : <span className="visual-monogram">{initials(category || article.title || 'News')}</span>}
+        {category && <span className="category-pill">{category}</span>}
       </Link>
       <div className="article-card-body">
-        <div className="article-meta"><span>{article.author?.name || article.author || 'Smart News Desk'}</span><span className="meta-dot" />{dateLabel(article.publishedAt || article.published_at || article.createdAt)}</div>
+        {(author || publishedAt) && <div className="article-meta">{author && <span>{author}</span>}{author && publishedAt && <span className="meta-dot" />}{publishedAt && dateLabel(publishedAt)}</div>}
         <Link to={`/article/${id}`} className="article-title-link"><h3>{article.title}</h3></Link>
         <p className="article-summary">{article.summary || article.description || 'Read the latest story from our newsroom.'}</p>
         {!compact && <div className="article-card-footer"><span><Clock3 size={14} /> 4 min read</span><span>{article.recommendation_reason || article.recommendationReason || ''}</span></div>}
@@ -160,6 +163,7 @@ function ShieldInfo() {
   return <LockKeyhole size={14} />
 }
 
+
 export function FeedPage() {
   const { user } = useAuth()
   const [items, setItems] = useState([])
@@ -167,29 +171,268 @@ export function FeedPage() {
   const [fallback, setFallback] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [activeCategory, setActiveCategory] = useState('All')
 
   useEffect(() => {
+    let active = true
+
     api.get('/recommendations?limit=12')
       .then(({ data }) => {
+        if (!active) return
         setItems(data.recommendations || [])
         setMessage(data.message || '')
         setFallback(Boolean(data.fallback))
       })
-      .catch((requestError) => setError(getErrorMessage(requestError)))
-      .finally(() => setLoading(false))
+      .catch((requestError) => {
+        if (active) setError(getErrorMessage(requestError))
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
   }, [])
 
+  const categories = [
+    'All',
+    ...new Set(items.map((item) => item.category).filter(Boolean)),
+  ]
+
+  const filteredItems = activeCategory === 'All'
+    ? items
+    : items.filter((item) => item.category === activeCategory)
+
+  const featured = filteredItems[0]
+  const remainingItems = filteredItems.slice(1)
+
   return (
-    <>
-      <PageHeader eyebrow="YOUR DAILY BRIEFING" title="Made for your curiosity." description="A fresh mix of stories, shaped by the topics you care about." />
-      {user?.editorApplicationStatus === 'Pending' && <Notice tone="success">Your Editor application is awaiting Admin approval. Reader access remains available while it is reviewed.</Notice>}
-      {user?.editorApplicationStatus === 'Rejected' && <Notice>Your Editor application was not approved. You can continue using your Reader account.</Notice>}
-      <div className="feed-banner"><span className="feed-banner-icon"><Sparkles size={20} /></span><div><strong>{fallback ? 'Trending in the newsroom' : 'Your feed, thoughtfully curated'}</strong><p>{message || 'Personalized recommendations update as you read and explore.'}</p></div><Link to="/interests" className="text-link">Tune your feed <ArrowRight size={15} /></Link></div>
+    <div className="premium-feed">
+      <motion.section
+        className="feed-welcome"
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.65 }}
+      >
+        <div>
+          <span className="premium-eyebrow">
+            <Sparkles size={14} /> YOUR PERSONAL NEWSROOM
+          </span>
+          <h1>
+            Stay Curious.
+            <br />
+            <span>Stay Informed.</span>
+          </h1>
+          <p>
+            Welcome back, {user?.name?.split(' ')[0] || 'Reader'}.
+            Your personalized briefing brings the stories that matter into focus.
+          </p>
+        </div>
+
+        <div className="welcome-orbit" aria-hidden="true">
+          <div className="orbit-ring orbit-ring-one" />
+          <div className="orbit-ring orbit-ring-two" />
+          <Sparkles size={35} />
+        </div>
+      </motion.section>
+
+      {user?.editorApplicationStatus === 'Pending' && (
+        <Notice tone="success">
+          Your Editor application is awaiting Admin approval. Reader access remains available while it is reviewed.
+        </Notice>
+      )}
+
+      {user?.editorApplicationStatus === 'Rejected' && (
+        <Notice>
+          Your Editor application was not approved. You can continue using your Reader account.
+        </Notice>
+      )}
+
+      <motion.div
+        className="premium-feed-banner"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.5 }}
+      >
+        <span className="premium-banner-icon">
+          <Sparkles size={19} />
+        </span>
+        <div>
+          <strong>
+            {fallback ? 'Trending across the newsroom' : 'Curated around your interests'}
+          </strong>
+          <p>
+            {message || 'Your reading journey helps us discover stories you may love.'}
+          </p>
+        </div>
+        <Link to="/interests" className="premium-tune-link">
+          Personalize <ArrowRight size={15} />
+        </Link>
+      </motion.div>
+
       {error && <Notice>{error}</Notice>}
-      {loading ? <Loading /> : items.length ? <ArticleGrid articles={items} /> : <EmptyState title="Your next story is around the corner" description="There are no unread recommendations yet. Explore the latest articles or update your interests." action={<Link className="button button-secondary" to="/discover">Explore stories</Link>} />}
-    </>
+
+      {loading ? (
+        <Loading />
+      ) : items.length === 0 ? (
+        <EmptyState
+          title="Your next story is around the corner"
+          description="There are no recommendations yet. Explore the latest articles or update your interests."
+          action={
+            <Link className="button button-secondary" to="/discover">
+              Explore stories
+            </Link>
+          }
+        />
+      ) : (
+        <>
+          <motion.section
+            className="feed-section"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.55 }}
+          >
+            <div className="premium-section-heading">
+              <div>
+                <span className="premium-eyebrow">EDITOR'S PICK FOR YOU</span>
+                <h2>Today's spotlight</h2>
+              </div>
+              <span className="live-indicator">
+                <span /> LIVE FEED
+              </span>
+            </div>
+
+            <div className="featured-story">
+              {featured ? (
+                <>
+                  <Link
+                    to={`/article/${featured._id || featured.article_id}`}
+                    className="featured-image"
+                    aria-label={`Read ${featured.title}`}
+                  >
+                    {featured.imageUrl || featured.image_url ? (
+                      <img
+                        src={getAssetUrl(featured.imageUrl || featured.image_url)}
+                        alt=""
+                      />
+                    ) : (
+                      <div className="featured-image-placeholder">
+                        <Newspaper size={54} />
+                      </div>
+                    )}
+                    {featured.category && <span className="featured-image-label">{featured.category}</span>}
+                  </Link>
+
+                  <div className="featured-copy">
+                    <span className="featured-kicker">
+                      <Sparkles size={13} /> FEATURED STORY
+                    </span>
+                    <h2>{featured.title}</h2>
+                    <p>
+                      {featured.summary ||
+                        featured.description ||
+                        'Explore this story and discover a fresh perspective.'}
+                    </p>
+                    {(featured.author?.name || featured.author || featured.publishedAt || featured.published_at || featured.createdAt) && (
+                      <div className="featured-meta">
+                        {(featured.author?.name || featured.author) && <span>{featured.author?.name || featured.author}</span>}
+                        {(featured.author?.name || featured.author) && (featured.publishedAt || featured.published_at || featured.createdAt) && <span>•</span>}
+                        {(featured.publishedAt || featured.published_at || featured.createdAt) && <span>{dateLabel(featured.publishedAt || featured.published_at || featured.createdAt)}</span>}
+                      </div>
+                    )}
+                    <Link
+                      to={`/article/${featured._id || featured.article_id}`}
+                      className="featured-read-button"
+                    >
+                      Read full story <ArrowRight size={17} />
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <p className="premium-empty-filter">
+                  No stories in this category yet. Choose another topic.
+                </p>
+              )}
+            </div>
+          </motion.section>
+
+          <section className="feed-section">
+            <div className="premium-section-heading">
+              <div>
+                <span className="premium-eyebrow">EXPLORE YOUR INTERESTS</span>
+                <h2>Find your next read</h2>
+              </div>
+            </div>
+
+            <div className="premium-category-list">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  className={`premium-category ${
+                    activeCategory === category ? 'premium-category-active' : ''
+                  }`}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {category === 'All' && <Compass size={14} />}
+                  {category}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="feed-section">
+            <div className="premium-section-heading">
+              <div>
+                <span className="premium-eyebrow">
+                  {fallback ? 'POPULAR RIGHT NOW' : 'POWERED BY YOUR READING INTERESTS'}
+                </span>
+                <h2>{fallback ? 'Trending stories' : 'Picked for you'}</h2>
+              </div>
+              <Link to="/discover" className="premium-view-all">
+                Discover all <ArrowRight size={15} />
+              </Link>
+            </div>
+
+            {remainingItems.length > 0 ? (
+              <motion.div
+                className="article-grid premium-article-grid"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: { staggerChildren: 0.09 },
+                  },
+                }}
+              >
+                {remainingItems.map((article) => (
+                  <motion.div
+                    key={article._id || article.article_id}
+                    variants={{
+                      hidden: { opacity: 0, y: 22 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.45, ease: 'easeOut' }}
+                    whileHover={{ y: -7, transition: { duration: 0.2 } }}
+                  >
+                    <ArticleCard article={article} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : featured ? (
+              <p className="premium-empty-filter">
+                That's all the stories in this category for now. Try another category.
+              </p>
+            ) : null}
+          </section>
+        </>
+      )}
+    </div>
   )
 }
+
 
 export function DiscoverPage({ managed = false, admin = false }) {
   const [search, setSearch] = useState('')

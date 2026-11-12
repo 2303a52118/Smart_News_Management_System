@@ -19,3 +19,13 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+
+# Docker image archives
+*.tar
+*.tar.gz
+
+# Local database migration and admin utilities
+backend/scripts/migrateDockerMongoToKubernetes.js
+backend/scripts/migrateLocalMongoToDocker.js
+backend/scripts/resetAdminPassword.js
+backend/scripts/listAdmins.js
