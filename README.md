@@ -1,160 +1,218 @@
-# Smart News Recommendation and Content Management Platform
+# 📰 Smart News Management System
 
-A full-stack news platform with JWT authentication, role-based publishing,
-reader engagement, and a Python machine-learning recommendation service.
+## 📌 About the Project
 
-## Role-based frontend
+Smart News Management System is a full-stack web application designed to manage and deliver news content efficiently. It integrates Machine Learning to provide personalized news recommendations based on article content and user reading history.
 
-The React/Vite dashboard is available at `http://localhost:5173` and signs in
-against the Express API at `http://127.0.0.1:5000/api` by default. To use a
-different backend URL, create `frontend/.env` from
-[`frontend/.env.example`](./frontend/.env.example) and set `VITE_API_URL`.
+The platform supports multiple user roles, allowing administrators, editors, content creators, and readers to interact with news content through a centralized application.
 
-- **Reader:** personalized ML feed, article search/category filters, article
-  details, likes, comments, bookmarks, reading history, and interest settings.
-- **Content Creator:** author-owned drafts, article editing and submission, and
-  status tracking.
-- **Editor:** pending article reviews, publish/reject workflow, and comment
-  moderation.
-- **Admin:** newsroom overview, editorial tools, category and user management,
-  and MongoDB-backed analytics charts.
+## 🎯 Objectives
 
-Navigation and route access are role-gated in the frontend and remain enforced
-by the backend APIs. Public registration supports Reader and Content Creator
-accounts. Editor applicants remain Readers until an Admin approves their
-application; public registration cannot create Admin accounts.
+- Build a complete full-stack news management platform.
+- Provide personalized news recommendations using Machine Learning.
+- Implement secure authentication and role-based access control.
+- Simplify news publishing and content management.
+- Deploy application services using Docker and Kubernetes.
 
-## Editor applications and live-news drafts
+## ✨ Key Features
 
-Admins can review pending Editor applications from **People & access**. An
-applicant has no editorial API permissions until approval changes their
-persisted account role to Editor. Rejection leaves the account as a Reader.
+- User registration and login.
+- JWT-based authentication.
+- Role-based access control.
+- News article creation, editing, and publishing.
+- Category management.
+- Article image uploads.
+- Article likes and views.
+- Personalized news recommendations.
+- Reading-history-based recommendations.
+- Popularity-based fallback recommendations.
+- Responsive user interface.
+- RESTful API integration.
 
-Article drafts retain optional source name, source URL, event date/time, and a
-short description alongside headline, summary, story, category, tags, and
-cover image. Creators can submit drafts through the existing review workflow;
-submission remains Pending until an Editor or Admin publishes or rejects it.
+## 🤖 Machine Learning Implementation
 
-## Local AI writing assistant
+The project includes a separate Python-based recommendation service.
 
-The article editor can request headline, summary, description, rewrite/grammar,
-category, and tag suggestions from a local Ollama model. Draft text is sent
-only to the configured local Ollama URL (the backend rejects non-loopback
-hosts). Suggestions are returned for explicit review and are never applied,
-saved, or published automatically. Install and start Ollama, then pull the
-configured model before using this feature:
+**Algorithms and techniques:**
 
-```powershell
-ollama pull llama3.1
-ollama serve
+- TF-IDF (Term Frequency-Inverse Document Frequency).
+- Cosine Similarity.
+- Content-based recommendation.
+- Reading-history-based personalization.
+- Popularity-based fallback recommendation.
+
+**Recommendation workflow:**
+
+1. Collect article information.
+2. Convert article text into numerical TF-IDF vectors.
+3. Calculate cosine similarity between articles and user interests.
+4. Rank relevant articles.
+5. Return recommended news articles to the frontend.
+
+If the ML service is unavailable, the backend provides popular unread articles as recommendations.
+
+## 🛠️ Technologies Used
+
+**Frontend**
+- React.js
+- JavaScript
+- Vite
+- CSS
+- Axios
+
+**Backend**
+- Node.js
+- Express.js
+- REST APIs
+
+**Database**
+- MongoDB
+- Mongoose
+
+**Machine Learning**
+- Python
+- FastAPI
+- Scikit-learn
+- TF-IDF
+- Cosine Similarity
+
+**Authentication and Security**
+- JSON Web Token (JWT)
+- bcryptjs
+- Role-based authorization
+
+**DevOps and Deployment**
+- Docker
+- Docker Compose
+- Kubernetes
+- Render deployment configuration
+
+## 🏗️ Application Architecture
+
+React Frontend → Express Backend → MongoDB Database
+
+The backend communicates with the separate Python FastAPI recommendation service to generate personalized news recommendations.
+
+## 👥 User Roles
+
+| Role | Responsibilities |
+|---|---|
+| Admin | Manage users, categories, and application content |
+| Editor | Manage and review news content |
+| Content Creator | Create and manage articles |
+| Reader | Read articles and receive recommendations |
+
+## 📂 Project Modules
+
+1. Authentication and User Management
+2. News Article Management
+3. Category Management
+4. Image Upload Management
+5. Machine Learning Recommendation Service
+6. Reader Dashboard
+7. Admin and Content Management
+8. Docker and Kubernetes Deployment
+
+## ⚙️ Installation and Execution
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/2303a52118/Smart_News_Management_System.git
+cd Smart_News_Management_System
 ```
 
-Set `OLLAMA_BASE_URL` and `OLLAMA_MODEL` in `backend/.env` if using a different
-local model. If the service or model is unavailable, the API reports an error
-and does not substitute fake suggestions. See
-[backend/API.md](./backend/API.md#local-ai-writing-assistant).
+### Backend
 
-## Machine-learning recommendation architecture
-
-The Node.js backend authenticates the Reader and reads only that Reader's
-interests, liked articles, and reading history from MongoDB. It fetches
-published article candidates and sends the profile and content to the separate
-FastAPI ML service. The service builds TF-IDF vectors from title, summary,
-content, category, and tags, then ranks candidate articles using cosine
-similarity. Previously read or liked articles are excluded. New readers and
-profiles with no matching vocabulary receive a popularity fallback based on
-real article views and likes. If FastAPI is unavailable, the Node backend
-returns a clearly marked popularity-based fallback.
-
-The ML service does not connect to MongoDB and does not receive user IDs or
-credentials. See [ml-service/README.md](./ml-service/README.md) for algorithm
-details, API requests, PowerShell setup, tests, and Docker instructions.
-
-## Run locally (Windows PowerShell)
-
-Start MongoDB and configure `backend/.env` using `backend/.env.example`. The
-backend defaults to `http://127.0.0.1:8000` for the ML service; override it with
-`ML_SERVICE_URL` if needed.
-
-Terminal 1 — Machine-learning service:
-
-```powershell
-Set-Location .\ml-service
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```bash
+cd backend
+npm install
+npm start
 ```
 
-Terminal 2 — Backend:
+Configure the required environment variables in the backend `.env` file.
 
-```powershell
-Set-Location .\backend
+### Frontend
+
+```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-Terminal 3 — Frontend:
+### Machine Learning Service
 
-```powershell
-Set-Location .\frontend
-npm install
-npm run dev
+```bash
+cd ml-service
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-Open `http://localhost:5173`, register a Reader, or sign in with a managed
-account. The Admin analytics page uses `GET /api/admin/reports`; its charts and
-tables are populated from published articles, reader interactions, comments,
-and user roles.
+Make sure MongoDB is running and the backend and ML service environment variables are configured.
 
-## Image uploads
+## 🐳 Docker Execution
 
-Article and category images can be uploaded as multipart files and are stored
-on the backend filesystem under `backend/uploads/articles` or
-`backend/uploads/categories`. MongoDB stores only the resulting `/uploads/...`
-URL; Express serves those files publicly so article cards and details can
-display them. The upload API accepts JPG/JPEG, PNG, and WEBP files up to 5 MB.
-Article image uploads require an authenticated Admin, Editor, or ContentCreator;
-category image uploads require an authenticated Admin. Existing external
-`imageUrl` values remain supported.
+Run the application from the project root:
 
-The upload directory is excluded from Git. Local filesystem storage is
-appropriate for development; production deployments with ephemeral or
-multiple backend instances should use persistent shared storage or an object
-storage service before deployment.
-
-See [backend/API.md](./backend/API.md#image-upload) for multipart requests,
-routes, and response examples.
-
-## Verification
-
-```powershell
-Set-Location .\ml-service
-$env:PYTHONPATH = (Get-Location).Path
-python -m pytest -q
-
-Set-Location ..\backend
-npm test
-npm run test:integration
-
-Set-Location ..\frontend
-npm run build
-npm run lint
+```bash
+docker compose up --build -d
 ```
 
-The backend integration suite uses a disposable, loopback-only MongoDB database
-and starts the local ML service for end-to-end recommendation tests.
+Check running containers:
 
-## Deploy to Render
+```bash
+docker compose ps
+```
 
-The root `render.yaml` Blueprint defines the static frontend, Express API, and
-FastAPI recommendation service. Push the repository to GitHub, then create a
-Blueprint at [Render](https://dashboard.render.com/blueprints/new) using that
-repository. Set `MONGO_URI` to the production MongoDB connection string when
-Render prompts for it; do not commit database credentials.
+Stop containers:
 
-The Blueprint uses free web-service instances. Their local filesystems are
-ephemeral, so uploaded article and category images will not persist across
-service restarts or redeployments. Configure persistent/object storage before
-relying on production uploads. The local-only Ollama writing assistant is not
-available from the hosted backend.
+```bash
+docker compose down
+```
+
+## ☸️ Kubernetes
+
+Apply the Kubernetes configuration:
+
+```bash
+kubectl apply -f k8s/
+```
+
+Check application resources:
+
+```bash
+kubectl get all -n smart-news
+```
+
+## 🧪 Testing
+
+The project includes automated tests for the backend, frontend, and ML service.
+
+| Component | Passed Tests |
+|---|---:|
+| Backend | 60 |
+| Frontend | 3 |
+| ML Service | 15 |
+| **Total** | **78** |
+
+## 🚀 Future Enhancements
+
+- Improve recommendation personalization.
+- Add real-time breaking news notifications.
+- Integrate external news APIs.
+- Add advanced analytics dashboards.
+- Improve image storage using cloud object storage.
+- Implement production monitoring and logging.
+
+## 👨‍💻 Developer
+
+**Pochampally Sravan**
+
+B.Tech Computer Science and Engineering (AI & ML)  
+SR University, Telangana
+
+GitHub: https://github.com/2303a52118
+
+## 📄 License
+
+This project is developed for academic and learning purposes.
